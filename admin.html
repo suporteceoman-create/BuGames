@@ -599,3 +599,79 @@ function deleteGame(index){
 ========================= */
 
 document
+.getElementById("deleteAllButton")
+.addEventListener("click", function(){
+
+    if(
+        confirm("Tem certeza que deseja apagar todos os jogos?")
+    ){
+
+        localStorage.removeItem("gamehub_games");
+
+        loadGames();
+
+    }
+
+});
+
+
+/* =========================
+   CONTACTOS
+========================= */
+
+document
+.getElementById("saveContacts")
+.addEventListener("click", function(){
+
+    var contacts = {
+
+        wa:
+        document
+        .getElementById("whatsapp")
+        .value.trim(),
+
+        tg:
+        document
+        .getElementById("telegram")
+        .value.trim()
+
+    };
+
+
+    localStorage.setItem(
+        "gamehub_contacts",
+        JSON.stringify(contacts)
+    );
+
+
+    alert("✅ Contactos guardados!");
+
+});
+
+
+function loadContacts(){
+
+    var contacts =
+        JSON.parse(
+            localStorage.getItem("gamehub_contacts")
+            || '{"wa":"","tg":""}'
+        );
+
+
+    document
+    .getElementById("whatsapp")
+    .value =
+    contacts.wa || "";
+
+
+    document
+    .getElementById("telegram")
+    .value =
+    contacts.tg || "";
+
+}
+
+</script>
+
+</body>
+</html>
