@@ -1,171 +1,601 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>GameHub — Administração</title>
+<title>GameHub - Administração</title>
 
 <style>
+*{
+    box-sizing:border-box;
+}
+
 body{
-  margin:0;
-  background:#0b1020;
-  color:#eef2ff;
-  font-family:Arial,sans-serif
+    margin:0;
+    padding:20px;
+    background:#0b1020;
+    color:white;
+    font-family:Arial,sans-serif;
 }
 
-.wrap{
-  width:min(900px,92%);
-  margin:40px auto
-}
-
-h1{
-  margin-bottom:6px
+.container{
+    max-width:850px;
+    margin:auto;
 }
 
 .box{
-  background:#111827;
-  border:1px solid #26334d;
-  border-radius:16px;
-  padding:22px;
-  margin:18px 0
+    background:#151c2f;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:20px;
 }
 
 input,select,textarea,button{
-  width:100%;
-  padding:12px;
-  margin:7px 0;
-  border-radius:9px;
-  border:0;
-  font-size:15px;
-  box-sizing:border-box
+    width:100%;
+    padding:13px;
+    margin-top:10px;
+    border-radius:8px;
+    border:none;
+    font-size:16px;
 }
 
 button{
-  background:#14b8a6;
-  font-weight:800;
-  cursor:pointer
+    background:#14b8a6;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
 }
 
-.danger{
-  background:#ef4444;
-  color:#fff
+button.delete{
+    background:#ef4444;
 }
 
-.muted{
-  color:#94a3b8
+.hidden{
+    display:none;
+}
+
+.preview{
+    max-width:250px;
+    max-height:180px;
+    margin-top:10px;
+    border-radius:10px;
+    display:none;
 }
 
 .game{
-  padding:15px;
-  border:1px solid #334155;
-  border-radius:10px;
-  margin:10px 0
+    border:1px solid #334155;
+    padding:15px;
+    margin-top:12px;
+    border-radius:10px;
 }
 
-.top{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  align-items:center
+.small{
+    color:#94a3b8;
+    font-size:14px;
 }
 
-.top button{
-  width:auto;
-  padding:8px 12px
-}
-
-#panel{
-  display:none
+h1{
+    margin-top:0;
 }
 </style>
 </head>
 
 <body>
 
-<div class="wrap">
-
-<h1>🔐 GameHub — Administração</h1>
-
-<p class="muted">
-Painel local de gestão do conteúdo publicado.
-</p>
+<div class="container">
 
 <!-- LOGIN -->
 
-<div id="login" class="box">
+<div id="loginBox" class="box">
 
-<h2>Entrar</h2>
+<h1>🔐 GameHub Admin</h1>
 
-<p>
-Palavra-passe inicial:
-<b>admin123</b>.
-Altere-a no código antes de publicar se usar este painel estático.
-</p>
+<p>Digite a senha para entrar.</p>
 
 <input
-id="pass"
-type="password"
-placeholder="Palavra-passe"
+    type="password"
+    id="password"
+    placeholder="Senha"
 >
 
-<button onclick="login()">
-Entrar
+<button id="loginButton">
+    Entrar
 </button>
 
-<p id="err"></p>
+<p id="loginMessage"></p>
 
 </div>
 
 
 <!-- PAINEL -->
 
-<div id="panel">
+<div id="adminPanel" class="hidden">
+
+<div class="box">
+
+<h1>🎮 Painel Administrativo</h1>
+
+<p class="small">
+Gerencie os jogos do GameHub.
+</p>
+
+</div>
 
 
 <!-- ADICIONAR JOGO -->
 
 <div class="box">
 
-<h2>Adicionar jogo</h2>
+<h2>➕ Adicionar jogo</h2>
 
 <input
-id="title"
-placeholder="Nome do jogo"
+    type="text"
+    id="title"
+    placeholder="Nome do jogo"
 >
 
-<select id="cat">
+<select id="category">
 
-<option>PC</option>
+<option value="PC">PC</option>
 
-<option>Mobile</option>
+<option value="Mobile">Mobile</option>
 
 </select>
 
 
-<!-- ESCOLHER IMAGEM -->
-
-<label
-for="imgFile"
-style="display:block;margin-top:8px;font-weight:700"
->
-📷 Imagem do jogo
-</label>
+<h3>📷 Imagem do jogo</h3>
 
 <input
-id="imgFile"
-type="file"
-accept="image/*"
->
-
-
-<!-- PRÉ-VISUALIZAÇÃO -->
-
-<div
-id="previewBox"
-style="display:none;margin:8px 0"
+    type="file"
+    id="imageFile"
+    accept="image/*"
 >
 
 <img
-id="preview"
-style="max-width:220px;max-height:160px
+    id="imagePreview"
+    class="preview"
+>
+
+
+<p class="small">
+Ou coloque uma URL da imagem:
+</p>
+
+<input
+    type="text"
+    id="imageUrl"
+    placeholder="https://..."
+>
+
+
+<input
+    type="text"
+    id="downloadUrl"
+    placeholder="Link para download"
+>
+
+
+<textarea
+    id="description"
+    rows="4"
+    placeholder="Descrição do jogo"
+></textarea>
+
+
+<button id="addButton">
+    ➕ Publicar jogo
+</button>
+
+</div>
+
+
+<!-- JOGOS -->
+
+<div class="box">
+
+<h2>📚 Jogos publicados</h2>
+
+<div id="gamesList"></div>
+
+<button
+    id="deleteAllButton"
+    class="delete"
+>
+    🗑️ Apagar todos os jogos
+</button>
+
+</div>
+
+
+<!-- CONTACTOS -->
+
+<div class="box">
+
+<h2>📱 Contactos</h2>
+
+<input
+    type="text"
+    id="whatsapp"
+    placeholder="WhatsApp"
+>
+
+<input
+    type="text"
+    id="telegram"
+    placeholder="Telegram"
+>
+
+<button id="saveContacts">
+    💾 Guardar contactos
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   CONFIGURAÇÃO
+========================= */
+
+var PASSWORD = "admin123";
+
+var selectedImage = "";
+
+
+/* =========================
+   LOGIN
+========================= */
+
+document
+.getElementById("loginButton")
+.addEventListener("click", function(){
+
+    var password =
+        document.getElementById("password").value;
+
+    if(password === PASSWORD){
+
+        document
+        .getElementById("loginBox")
+        .classList.add("hidden");
+
+        document
+        .getElementById("adminPanel")
+        .classList.remove("hidden");
+
+        loadGames();
+        loadContacts();
+
+    }else{
+
+        document
+        .getElementById("loginMessage")
+        .innerText =
+        "❌ Senha incorreta.";
+
+    }
+
+});
+
+
+/* Permitir ENTER */
+
+document
+.getElementById("password")
+.addEventListener("keydown", function(event){
+
+    if(event.key === "Enter"){
+
+        document
+        .getElementById("loginButton")
+        .click();
+
+    }
+
+});
+
+
+/* =========================
+   ESCOLHER IMAGEM
+========================= */
+
+document
+.getElementById("imageFile")
+.addEventListener("change", function(){
+
+    var file = this.files[0];
+
+    if(!file){
+
+        selectedImage = "";
+
+        document
+        .getElementById("imagePreview")
+        .style.display = "none";
+
+        return;
+    }
+
+
+    if(!file.type.startsWith("image/")){
+
+        alert("Escolha um arquivo de imagem.");
+
+        this.value = "";
+
+        return;
+    }
+
+
+    /* Limite de 1 MB */
+
+    if(file.size > 1024 * 1024){
+
+        alert(
+            "A imagem é muito grande. " +
+            "Escolha uma imagem de até 1 MB."
+        );
+
+        this.value = "";
+
+        return;
+    }
+
+
+    var reader = new FileReader();
+
+
+    reader.onload = function(event){
+
+        selectedImage = event.target.result;
+
+        var preview =
+            document.getElementById("imagePreview");
+
+        preview.src = selectedImage;
+
+        preview.style.display = "block";
+
+    };
+
+
+    reader.readAsDataURL(file);
+
+});
+
+
+/* =========================
+   ADICIONAR JOGO
+========================= */
+
+document
+.getElementById("addButton")
+.addEventListener("click", function(){
+
+    var title =
+        document.getElementById("title").value.trim();
+
+    var category =
+        document.getElementById("category").value;
+
+    var imageUrl =
+        document.getElementById("imageUrl").value.trim();
+
+    var downloadUrl =
+        document.getElementById("downloadUrl").value.trim();
+
+    var description =
+        document.getElementById("description").value.trim();
+
+
+    var image = selectedImage || imageUrl;
+
+
+    if(title === ""){
+
+        alert("Digite o nome do jogo.");
+
+        return;
+    }
+
+
+    if(image === ""){
+
+        alert(
+            "Escolha uma imagem ou coloque a URL da imagem."
+        );
+
+        return;
+    }
+
+
+    if(downloadUrl === ""){
+
+        alert("Digite o link de download.");
+
+        return;
+    }
+
+
+    var games =
+        JSON.parse(
+            localStorage.getItem("gamehub_games") || "[]"
+        );
+
+
+    games.push({
+
+        title:title,
+
+        cat:category,
+
+        img:image,
+
+        url:downloadUrl,
+
+        desc:description
+
+    });
+
+
+    try{
+
+        localStorage.setItem(
+            "gamehub_games",
+            JSON.stringify(games)
+        );
+
+    }catch(error){
+
+        alert(
+            "Não foi possível guardar a imagem. " +
+            "Experimente uma imagem menor."
+        );
+
+        return;
+    }
+
+
+    /* Limpar */
+
+    document.getElementById("title").value = "";
+
+    document.getElementById("imageUrl").value = "";
+
+    document.getElementById("downloadUrl").value = "";
+
+    document.getElementById("description").value = "";
+
+    document.getElementById("imageFile").value = "";
+
+    document.getElementById("imagePreview").style.display = "none";
+
+    selectedImage = "";
+
+
+    loadGames();
+
+
+    alert("✅ Jogo publicado com sucesso!");
+
+});
+
+
+/* =========================
+   CARREGAR JOGOS
+========================= */
+
+function loadGames(){
+
+    var games =
+        JSON.parse(
+            localStorage.getItem("gamehub_games") || "[]"
+        );
+
+
+    var list =
+        document.getElementById("gamesList");
+
+
+    if(games.length === 0){
+
+        list.innerHTML =
+        "<p class='small'>Nenhum jogo publicado.</p>";
+
+        return;
+    }
+
+
+    list.innerHTML = "";
+
+
+    games.forEach(function(game,index){
+
+        var div =
+            document.createElement("div");
+
+        div.className = "game";
+
+
+        var title =
+            document.createElement("strong");
+
+        title.innerText =
+            game.title;
+
+
+        var info =
+            document.createElement("p");
+
+        info.className = "small";
+
+        info.innerText =
+            game.cat;
+
+
+        var button =
+            document.createElement("button");
+
+        button.className = "delete";
+
+        button.innerText =
+            "🗑️ Apagar";
+
+
+        button.onclick = function(){
+
+            deleteGame(index);
+
+        };
+
+
+        div.appendChild(title);
+
+        div.appendChild(info);
+
+        div.appendChild(button);
+
+        list.appendChild(div);
+
+    });
+
+}
+
+
+/* =========================
+   APAGAR JOGO
+========================= */
+
+function deleteGame(index){
+
+    var games =
+        JSON.parse(
+            localStorage.getItem("gamehub_games") || "[]"
+        );
+
+
+    games.splice(index,1);
+
+
+    localStorage.setItem(
+        "gamehub_games",
+        JSON.stringify(games)
+    );
+
+
+    loadGames();
+
+}
+
+
+/* =========================
+   APAGAR TODOS
+========================= */
+
+document
