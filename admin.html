@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GameHub — Administração</title>
+<style>
+body{margin:0;background:#0b1020;color:#eef2ff;font-family:Arial,sans-serif}.wrap{width:min(900px,92%);margin:40px auto}h1{margin-bottom:6px}.box{background:#111827;border:1px solid #26334d;border-radius:16px;padding:22px;margin:18px 0}input,select,textarea,button{width:100%;padding:12px;margin:7px 0;border-radius:9px;border:0;font-size:15px;box-sizing:border-box}button{background:#14b8a6;font-weight:800;cursor:pointer}.danger{background:#ef4444;color:#fff}.muted{color:#94a3b8}.game{padding:15px;border:1px solid #334155;border-radius:10px;margin:10px 0}.top{display:flex;justify-content:space-between;gap:10px;align-items:center}.top button{width:auto;padding:8px 12px}#panel{display:none}
+</style></head><body><div class="wrap">
+<h1>🔐 GameHub — Administração</h1><p class="muted">Painel local de gestão do conteúdo publicado.</p>
+<div id="login" class="box"><h2>Entrar</h2><p>Palavra-passe inicial: <b>admin123</b>. Altere-a no código antes de publicar se usar este painel estático.</p><input id="pass" type="password" placeholder="Palavra-passe"><button onclick="login()">Entrar</button><p id="err"></p></div>
+<div id="panel">
+<div class="box"><h2>Adicionar jogo</h2><input id="title" placeholder="Nome do jogo"><select id="cat"><option>PC</option><option>Mobile</option></select><input id="img" placeholder="URL da imagem"><input id="url" placeholder="URL do download"><textarea id="desc" placeholder="Descrição"></textarea><button onclick="add()">Publicar jogo</button></div>
+<div class="box"><h2>Contactos</h2><input id="wa" placeholder="WhatsApp (ex.: 2449XXXXXXXX)"><input id="tg" placeholder="Link do Telegram (https://t.me/...)"><button onclick="saveContacts()">Guardar contactos</button></div>
+<div class="box"><h2>Jogos publicados</h2><div id="list"></div><button class="danger" onclick="clearAll()">Apagar todos</button></div>
+<div class="box"><h2>Publicidade</h2><p class="muted">Depois de o site estar publicado e o AdSense aprovado, coloque o seu código de anúncio na área indicada em index.html. Para parcerias diretas, substitua os blocos de publicidade pelo código fornecido pelo anunciante.</p></div>
+</div></div>
+<script>
+function login(){if(document.getElementById("pass").value==="admin123"){sessionStorage.admin="1";show()}else document.getElementById("err").textContent="Palavra-passe incorreta."}
+function show(){document.getElementById("login").style.display="none";document.getElementById("panel").style.display="block";load()}
+if(sessionStorage.admin==="1")show();
+function add(){let g={title:v("title"),cat:v("cat"),img:v("img"),url:v("url"),desc:v("desc")};if(!g.title||!g.url)return alert("Preencha pelo menos nome e link.");let a=JSON.parse(localStorage.getItem("gamehub_games")||"[]");a.push(g);localStorage.setItem("gamehub_games",JSON.stringify(a));["title","img","url","desc"].forEach(id=>document.getElementById(id).value="");load();alert("Jogo publicado.");}
+function v(id){return document.getElementById(id).value}
+function load(){let a=JSON.parse(localStorage.getItem("gamehub_games")||"[]");document.getElementById("list").innerHTML=a.length?a.map((g,i)=>`<div class="game"><div class="top"><b>${esc(g.title)}</b><button class="danger" onclick="del(${i})">Apagar</button></div><small>${esc(g.cat)} · ${esc(g.url)}</small></div>`).join(""):"<p class='muted'>Nenhum jogo publicado.</p>";let c=JSON.parse(localStorage.getItem("gamehub_contacts")||'{"wa":"","tg":""}');document.getElementById("wa").value=c.wa||"";document.getElementById("tg").value=c.tg||""}
+function del(i){let a=JSON.parse(localStorage.getItem("gamehub_games")||"[]");a.splice(i,1);localStorage.setItem("gamehub_games",JSON.stringify(a));load()}
+function clearAll(){if(confirm("Apagar todos os jogos?")){localStorage.removeItem("gamehub_games");load()}}
+function saveContacts(){localStorage.setItem("gamehub_contacts",JSON.stringify({wa:v("wa"),tg:v("tg")}));alert("Contactos guardados.")}
+function esc(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+</script></body></html>

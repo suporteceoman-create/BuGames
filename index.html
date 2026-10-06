@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GameHub Downloads — PC e Mobile</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#0b1020;color:#eef2ff}
+header{background:#121a31;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px;position:sticky;top:0;z-index:5}
+.logo{font-size:22px;font-weight:800}.logo span{color:#5eead4}
+nav a{color:#cbd5e1;text-decoration:none;margin-left:18px}
+.hero{padding:60px 5%;background:linear-gradient(135deg,#111936,#172554)}
+.hero h1{font-size:clamp(32px,6vw,58px);margin:0 0 12px}.hero p{color:#cbd5e1;max-width:700px;font-size:18px}
+.wrap{width:min(1150px,90%);margin:auto}.tools{display:flex;gap:10px;flex-wrap:wrap;margin:28px 0}
+input,select,button{border:0;border-radius:10px;padding:13px 15px;font-size:15px}
+input{flex:1;min-width:220px;background:#fff;color:#111827}select{background:#1e293b;color:#fff}
+button{cursor:pointer;background:#14b8a6;color:#06121a;font-weight:700}.filter{background:#334155;color:#fff}.filter.active{background:#14b8a6;color:#06121a}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
+.card{background:#111827;border:1px solid #26334d;border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.card img{width:100%;height:170px;object-fit:cover;background:#1e293b}.card-body{padding:18px;flex:1;display:flex;flex-direction:column}.tag{color:#5eead4;font-size:13px;font-weight:bold}.card h3{margin:8px 0}.card p{color:#94a3b8;line-height:1.5}.download{margin-top:auto;text-align:center;text-decoration:none;padding:12px;border-radius:10px;background:#22c55e;color:#052e16;font-weight:800}
+.ad{margin:25px 0;padding:25px;border:1px dashed #475569;border-radius:14px;text-align:center;color:#64748b;background:#0f172a}
+.contact{margin:45px 0;padding:30px;border-radius:18px;background:#172033}.contact a{display:inline-block;margin:7px 7px 0 0;padding:12px 16px;border-radius:10px;text-decoration:none;color:#fff;background:#25d366}.contact a.tg{background:#229ed9}
+footer{padding:35px 5%;color:#64748b;text-align:center;border-top:1px solid #1e293b}.modal{display:none;position:fixed;inset:0;background:#000b;z-index:10;padding:20px}.modal>div{max-width:700px;margin:8vh auto;background:#111827;padding:25px;border-radius:16px;max-height:80vh;overflow:auto}.close{float:right;background:#334155;color:#fff}
+</style>
+</head>
+<body>
+<header><div class="logo">🎮 <span>GameHub</span> Downloads</div><nav><a href="#jogos">Jogos</a><a href="#contacto">Contacto</a></nav></header>
+<section class="hero"><div class="wrap"><h1>Jogos para PC e Mobile</h1><p>Descubra jogos, veja imagens e aceda aos links de download disponibilizados pelo GameHub.</p></div></section>
+<main class="wrap" id="jogos">
+<div class="ad">ESPAÇO PARA GOOGLE ADSENSE / PUBLICIDADE</div>
+<div class="tools"><input id="search" placeholder="Pesquisar jogo..."><button class="filter active" data-cat="Todos">Todos</button><button class="filter" data-cat="PC">PC</button><button class="filter" data-cat="Mobile">Mobile</button></div>
+<div id="grid" class="grid"></div>
+<div class="ad">ESPAÇO PARA OUTRA PARCERIA PUBLICITÁRIA</div>
+<section class="contact" id="contacto"><h2>📲 Contacte-nos</h2><p>Fale connosco pelo WhatsApp ou Telegram.</p><div id="links"></div></section>
+</main>
+<footer>© 2026 GameHub Downloads · <a href="#" onclick="openModal('privacy');return false">Privacidade</a> · <a href="#" onclick="openModal('terms');return false">Termos</a></footer>
+<div class="modal" id="privacy"><div><button class="close" onclick="closeModal('privacy')">Fechar</button><h2>Privacidade</h2><p>Este site pode utilizar cookies e tecnologias de publicidade de terceiros, incluindo Google AdSense, quando configurado pelo proprietário.</p></div></div>
+<div class="modal" id="terms"><div><button class="close" onclick="closeModal('terms')">Fechar</button><h2>Termos</h2><p>O GameHub deve publicar apenas conteúdo e links que o proprietário tenha autorização para distribuir. Não utilize este portal para jogos pirateados, cracks ou conteúdo sem licença.</p></div></div>
+<script>
+const demo=[
+{title:"Exemplo — PC Game",cat:"PC",img:"https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80",url:"#",desc:"Exemplo de publicação. Substitua pelo seu jogo no painel administrativo."},
+{title:"Exemplo — Mobile Game",cat:"Mobile",img:"https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80",url:"#",desc:"Exemplo de publicação para dispositivos móveis."}];
+let games=JSON.parse(localStorage.getItem("gamehub_games")||"null")||demo;
+let contacts=JSON.parse(localStorage.getItem("gamehub_contacts")||"null")||{wa:"",tg:""};
+let cat="Todos";
+function render(){let q=document.getElementById("search").value.toLowerCase();let a=games.filter(g=>(cat==="Todos"||g.cat===cat)&&g.title.toLowerCase().includes(q));document.getElementById("grid").innerHTML=a.map(g=>`<article class="card"><img src="${esc(g.img)}" onerror="this.style.display='none'"><div class="card-body"><span class="tag">${esc(g.cat)}</span><h3>${esc(g.title)}</h3><p>${esc(g.desc)}</p><a class="download" href="${esc(g.url)}" target="_blank" rel="noopener">⬇️ DOWNLOAD</a></div></article>`).join("")||"<p>Nenhum jogo encontrado.</p>"}
+function esc(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+document.getElementById("search").oninput=render;
+document.querySelectorAll(".filter").forEach(b=>b.onclick=()=>{document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));b.classList.add("active");cat=b.dataset.cat;render()});
+document.getElementById("links").innerHTML=(contacts.wa?`<a href="https://wa.me/${contacts.wa.replace(/\D/g,'')}" target="_blank">WhatsApp</a>`:"")+(contacts.tg?`<a class="tg" href="${contacts.tg}" target="_blank">Telegram</a>`:"")||"<span style='color:#94a3b8'>Contactos ainda não configurados.</span>";
+function openModal(x){document.getElementById(x).style.display="block"}function closeModal(x){document.getElementById(x).style.display="none"} render();
+</script>
+</body></html>
